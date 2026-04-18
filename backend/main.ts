@@ -41,7 +41,10 @@ function getSession(sessionId: string) {
 async function createMessage(sessionId: string, prompt: string) {
     const session = getSession(sessionId);
 
-    session.messages.push({ role: "user", content: prompt });
+    session.messages.push({
+        role: "user",
+        content: [{ type: "text", text: prompt }],
+    });
 
     const response = await session.client.messages.create({
         model: "claude-sonnet-4-6",
@@ -49,16 +52,38 @@ async function createMessage(sessionId: string, prompt: string) {
         messages: session.messages,
     });
 
-    session.messages.push({ role: response.role, content: response.content });
+    const message = { role: response.role, content: response.content };
 
-    return response.content
-        .map((block) => (block.type == "text" ? block.text : ""))
-        .join("");
+    session.messages.push(message);
+
+    return message;
 }
 
-app.post("/create-session", (_, response) => {
+async function getHistory(sessionId: string) {
+    return getSession(sessionId).messages;
+}
+
+app.post("/create-session", (request, response) => {
+    if (request.cookies["session"]) {
+        response.sendStatus(200);
+        return;
+    }
+
     response.cookie("session", crypto.randomUUID());
     response.sendStatus(200);
+});
+
+app.get("/history", async (request, response) => {
+    const sessionId = request.cookies["session"];
+
+    if (!sessionId) {
+        response.sendStatus(401);
+        return;
+    }
+
+    const history = await getHistory(sessionId);
+
+    response.send(history);
 });
 
 app.post("/message", async (request, response) => {
