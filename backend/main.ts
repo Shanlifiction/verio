@@ -15,6 +15,9 @@ const port = 3000;
 interface Session {
     client: Anthropic;
     messages: MessageParam[];
+    tabTime: number[];
+    activeTab: number | null;
+    lastTabSwitch: number | null;
 }
 
 const sessions: Record<string, Session> = {};
@@ -27,9 +30,12 @@ if (!claudeKey) {
 
 function getSession(sessionId: string) {
     if (!sessions[sessionId]) {
-        const session = {
+        const session: Session = {
             client: new Anthropic(),
             messages: [],
+            tabTime: new Array(5).fill(0),
+            activeTab: null,
+            lastTabSwitch: null,
         };
         session.client.apiKey = claudeKey;
         sessions[sessionId] = session;
@@ -63,6 +69,18 @@ async function getHistory(sessionId: string) {
     return getSession(sessionId).messages;
 }
 
+function setActiveTab(sessionId: string, tab: number) {
+    const session = getSession(sessionId);
+
+    const now = performance.now();
+
+    if (session.activeTab != null && session.lastTabSwitch != null) {
+        session.tabTime[session.activeTab] += now - session.lastTabSwitch;
+    }
+
+    session.activeTab = tab;
+    session.lastTabSwitch = now;
+}
 app.post("/create-session", (request, response) => {
     if (request.cookies["session"]) {
         response.sendStatus(200);
@@ -98,6 +116,19 @@ app.post("/message", async (request, response) => {
     response.send({
         response: await createMessage(sessionId, request.body.message),
     });
+});
+
+app.post("/set-active-tab", (request, response) => {
+    const sessionId = request.cookies["session"];
+
+    if (!sessionId) {
+        response.sendStatus(401);
+        return;
+    }
+
+    setActiveTab(sessionId, request.body.tab);
+
+    response.sendStatus(200);
 });
 
 app.listen(port, () => {

@@ -26,3 +26,7 @@ export async function getHistory() {
     const response = await serverFetch("/history");
     return response.json() as Promise<Message[]>;
 }
+
+export async function setActiveTab(tab: number) {
+    await serverFetch("/set-active-tab", { tab });
+}
