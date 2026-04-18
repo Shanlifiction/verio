@@ -1,18 +1,19 @@
+import { ContentBlockParam, MessageParam } from "@anthropic-ai/sdk/resources";
+
 import Anthropic from "@anthropic-ai/sdk";
-import { MessageParam } from "@anthropic-ai/sdk/resources";
 import { RequestHandler } from "express";
 import { claudeKey } from "./main";
 
-export type UserEventType = "tab-switch" | "session-start" | "session-end";
+export type UserEventType =
+    | "session-start"
+    | "session-end"
+    | "tab-switch"
+    | "user-message"
+    | "assistant-message";
 
 export interface BaseUserEvent {
     type: UserEventType;
     time: number;
-}
-
-export interface TabSwitchEvent extends BaseUserEvent {
-    type: "tab-switch";
-    tab: number;
 }
 
 export interface SessionStartEvent extends BaseUserEvent {
@@ -23,7 +24,27 @@ export interface SessionEndEvent extends BaseUserEvent {
     type: "session-end";
 }
 
-export type UserEvent = SessionStartEvent | SessionEndEvent | TabSwitchEvent;
+export interface TabSwitchEvent extends BaseUserEvent {
+    type: "tab-switch";
+    tab: number;
+}
+
+export interface UserMessageEvent extends BaseUserEvent {
+    type: "user-message";
+    message: ContentBlockParam[];
+}
+
+export interface AssistantMessageEvent extends BaseUserEvent {
+    type: "assistant-message";
+    message: ContentBlockParam[];
+}
+
+export type UserEvent =
+    | SessionStartEvent
+    | SessionEndEvent
+    | TabSwitchEvent
+    | UserMessageEvent
+    | AssistantMessageEvent;
 
 export interface Session {
     client: Anthropic;

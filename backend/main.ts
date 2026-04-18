@@ -1,5 +1,6 @@
 import { createEvent, sessionMiddleware } from "./sessions";
 
+import { ContentBlockParam } from "@anthropic-ai/sdk/resources";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
@@ -25,9 +26,21 @@ app.get("/history", async (request, response) => {
 });
 
 app.post("/message", async (request, response) => {
+    const userMessage: ContentBlockParam[] = [
+        {
+            type: "text",
+            text: request.body.message,
+        },
+    ];
+
     request.session.messages.push({
         role: "user",
-        content: [{ type: "text", text: request.body.message }],
+        content: userMessage,
+    });
+
+    createEvent(request.session, {
+        type: "user-message",
+        message: userMessage,
     });
 
     const { content, role } = await request.session.client.messages.create({
@@ -36,12 +49,17 @@ app.post("/message", async (request, response) => {
         messages: request.session.messages,
     });
 
-    const message = { role, content };
+    const assistantMessage = { role, content };
 
-    request.session.messages.push(message);
+    createEvent(request.session, {
+        type: "assistant-message",
+        message: content,
+    });
+
+    request.session.messages.push(assistantMessage);
 
     response.send({
-        response: message,
+        response: assistantMessage,
     });
 });
 
