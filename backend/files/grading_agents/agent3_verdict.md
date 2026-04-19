@@ -48,6 +48,29 @@ Signals: memo_reasoning_linkage (weight 0.30) + memo_tradeoff_handling (weight 0
 
 ---
 
+Radar scores (for hexagonal visualization)
+
+Derive these six values from already-computed signals. No new calculation required beyond what is listed above and in the agent inputs.
+
+evidence_discipline: copy from dimensions.evidence_discipline.score (computed above)
+ai_governance: copy from dimensions.ai_governance.score (computed above)
+recovery_under_error: copy from dimensions.recovery_under_error.score (computed above)
+analytical_judgment: copy from dimensions.analytical_judgment.score (computed above)
+prompt_quality: take directly from agent1_output.prompt_quality.trimmed_mean
+memo_integrity: compute as the average of these four agent2 sub-scores:
+  (agent2_output.memo_quality.factual_correctness.score
+   + agent2_output.memo_quality.reasoning_linkage.score
+   + agent2_output.memo_quality.tradeoff_handling.score
+   + agent2_output.memo_quality.recommendation_calibration.score) / 4
+
+All six radar values are 0-1 normalized.
+They are used only for frontend rendering of the hexagonal chart.
+They do NOT affect the verdict, dimension scores, pattern label, or confidence calculation.
+If prompt_quality.trimmed_mean is null in Agent 1 output, set radar.prompt_quality to null and add a flag.
+If any memo_quality sub-score is null in Agent 2 output, exclude it from the memo_integrity average and note in flags.
+
+---
+
 BAND THRESHOLDS
 
 Internal scores stay 0-1. External display uses these bands:
@@ -178,10 +201,18 @@ Return exactly this JSON. No other text. No markdown.
       "evidence_bullets": ["string"]
     }
   },
+  "radar": {
+    "evidence_discipline": "number — copy from dimensions.evidence_discipline.score",
+    "ai_governance": "number — copy from dimensions.ai_governance.score",
+    "recovery_under_error": "number — copy from dimensions.recovery_under_error.score",
+    "analytical_judgment": "number — copy from dimensions.analytical_judgment.score",
+    "prompt_quality": "number — agent1_output.prompt_quality.trimmed_mean",
+    "memo_integrity": "number — average of agent2_output.memo_quality four sub-scores"
+  },
   "contradictions": [
     "string — specific description of each process/output contradiction detected"
   ],
   "flags": [
-    "string — missing data, low confidence signals, untriggered injections, near-boundary scores"
+    "string — missing data, low confidence signals, untriggered injections, near-boundary scores, null radar values"
   ]
 }
