@@ -12,12 +12,11 @@ import {
     tablePlugin,
     toolbarPlugin,
 } from "@mdxeditor/editor";
+import { finish, pasteEvent } from "./server";
 import { useEffect, useRef, useState } from "react";
 
-import { pasteEvent } from "./server";
-
 export function MemoEditor() {
-    const [, setValue] = useState("");
+    const [value, setValue] = useState("");
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -71,6 +70,9 @@ export function MemoEditor() {
                     listsPlugin(),
                 ]}
             />
+            <button type="button" onClick={() => finish(value)}>
+                Finish
+            </button>
         </div>
     );
 }

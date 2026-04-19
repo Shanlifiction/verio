@@ -58,6 +58,7 @@ export interface Session {
     messages: MessageParam[];
     events: UserEvent[];
     locked: boolean;
+    memo?: string;
 }
 
 const sessions: Record<string, Session> = {};

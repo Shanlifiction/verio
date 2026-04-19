@@ -1,10 +1,10 @@
 import { createEvent, sessionMiddleware } from "./sessions";
 
-import { ContentBlockParam } from "@anthropic-ai/sdk/resources";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
 import { generateReport } from "./report";
+import { userMessage } from "./user-messaging";
 
 dotenv.config();
 
@@ -26,40 +26,8 @@ app.get("/history", async (request, response) => {
 });
 
 app.post("/message", async (request, response) => {
-    const userMessage: ContentBlockParam[] = [
-        {
-            type: "text",
-            text: request.body.message,
-        },
-    ];
-
-    request.session.messages.push({
-        role: "user",
-        content: userMessage,
-    });
-
-    createEvent(request.session, {
-        type: "user-message",
-        message: userMessage,
-    });
-
-    const { content, role } = await request.session.client.messages.create({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1024,
-        messages: request.session.messages,
-    });
-
-    const assistantMessage = { role, content };
-
-    createEvent(request.session, {
-        type: "assistant-message",
-        message: content,
-    });
-
-    request.session.messages.push(assistantMessage);
-
     response.send({
-        response: assistantMessage,
+        response: await userMessage(request.session, request.body.message),
     });
 });
 
@@ -78,6 +46,7 @@ app.post("/paste-event", (request, response) => {
 
 app.post("/finish", (request, response) => {
     createEvent(request.session, { type: "session-end" });
+    request.session.memo = request.body.memo;
     response.sendStatus(200);
 });
 

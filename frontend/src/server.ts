@@ -28,5 +28,9 @@ export async function setActiveTab(tab: number) {
 }
 
 export async function pasteEvent(wordCount: number) {
-    await serverFetch("/paste-event", { wordCount }, "POST");
+    await serverFetch("/paste-event", { wordCount });
+}
+
+export async function finish(memo: string) {
+    await serverFetch("/finish", { memo });
 }
