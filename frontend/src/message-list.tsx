@@ -9,7 +9,7 @@ function Message({ message }: { message: Message }) {
 
     return (
         <li className={isUser ? "ml-auto text-right" : ""}>
-            <div>{isUser ? "You" : "FinRec"}</div>
+            <div>{isUser ? "You" : "Verio"}</div>
             <div
                 className={`${isUser ? "bg-zinc-50 text-zinc-900 rounded-tr-none" : "bg-zinc-700 rounded-tl-none"} px-4 py-2 rounded-lg`}>
                 <Markdown>{content}</Markdown>
