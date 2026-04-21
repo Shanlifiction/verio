@@ -1,10 +1,10 @@
 import { ContentBlockParam, MessageParam } from "@anthropic-ai/sdk/resources";
-import { Session, createEvent } from "../sessions";
+import { Session, createEvent } from "../sessions.js";
 
-import { inject } from "./injection";
-import { readFileSync } from "node:fs";
+import { inject } from "./injection.js";
+import { loadSystemPrompt } from "../system-prompts/util.js";
 
-const agentPrompt = readFileSync("../system-prompts/assistant.md", "utf-8");
+const agentPrompt = loadSystemPrompt("assistant");
 
 export async function userMessage(session: Session, prompt: string) {
     const userMessage: ContentBlockParam[] = [

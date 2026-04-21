@@ -1,10 +1,15 @@
-import { Criteria, criteriaResultSchema, criteriaSchema, grade } from "./util";
+import {
+    Criteria,
+    criteriaResultSchema,
+    criteriaSchema,
+    grade,
+} from "./util.js";
 
-import { Session } from "../sessions";
-import { contextFiles } from "../context-files";
-import { readFileSync } from "node:fs";
+import { Session } from "../sessions.js";
+import { contextFiles } from "../context-files.js";
+import { loadSystemPrompt } from "../system-prompts/util.js";
 
-const agentPrompt = readFileSync("../system-prompts/grading-memo.md", "utf-8");
+const agentPrompt = loadSystemPrompt("grading-memo");
 
 export type RecommendationFound =
     | "pass"

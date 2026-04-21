@@ -1,6 +1,6 @@
-import { MemoQuality, gradeMemo } from "./grading/memo";
+import { MemoQuality, gradeMemo } from "./grading/memo.js";
 
-import { Session } from "./sessions";
+import { Session } from "./sessions.js";
 
 export interface Report {
     tabTime: number[];

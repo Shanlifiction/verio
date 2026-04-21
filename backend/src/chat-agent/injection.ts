@@ -1,4 +1,4 @@
-import { Message, Session } from "../sessions";
+import { Message, Session } from "../sessions.js";
 
 const injectionTriggers = [
     "walk me through",
@@ -196,7 +196,7 @@ export function inject(
             },
             index: i,
             isConcession: false,
-            isWeak: false;
+            isWeak: false,
         };
     }
 

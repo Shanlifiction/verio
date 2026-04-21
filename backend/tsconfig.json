@@ -1,5 +1,11 @@
 {
     "compilerOptions": {
-        "typeRoots": ["./types", "./node_modules/@types"]
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "typeRoots": ["./types", "./node_modules/@types"],
+        "outDir": "./build",
+        "rootDir": "./src",
+        "strict": true,
+        "skipLibCheck": true
     }
 }

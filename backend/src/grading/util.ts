@@ -5,7 +5,7 @@ import {
     ToolUseBlock,
 } from "@anthropic-ai/sdk/resources";
 
-import { Session } from "../sessions";
+import { Session } from "../sessions.js";
 
 export interface CriteriaResult {
     score: number;

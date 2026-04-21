@@ -1,10 +1,10 @@
-import { createEvent, sessionMiddleware } from "./sessions";
+import { createEvent, sessionMiddleware } from "./sessions.js";
 
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
-import { generateReport } from "./report";
-import { userMessage } from "./chat-agent/user-messaging";
+import { generateReport } from "./report.js";
+import { userMessage } from "./chat-agent/user-messaging.js";
 
 dotenv.config();
 
