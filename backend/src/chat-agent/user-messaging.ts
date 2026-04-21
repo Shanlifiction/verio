@@ -36,7 +36,7 @@ export async function userMessage(session: Session, prompt: string) {
         });
 
         session.messages.push(injection.message);
-        return;
+        return injection.message;
     }
 
     const message = await session.client.messages.create({
@@ -44,11 +44,7 @@ export async function userMessage(session: Session, prompt: string) {
         max_tokens: 1024,
         cache_control: { type: "ephemeral" },
         system: agentPrompt,
-        messages: session.messages.map((message) =>
-            message.role == "injection"
-                ? { ...message, role: "assistant" }
-                : message,
-        ) as MessageParam[],
+        messages: session.messages,
     });
 
     createEvent(session, {

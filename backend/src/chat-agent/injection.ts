@@ -128,7 +128,7 @@ export function inject(
 
             return {
                 message: {
-                    role: "injection",
+                    role: "assistant",
                     content: [
                         {
                             type: "text",
@@ -155,7 +155,7 @@ export function inject(
 
             return {
                 message: {
-                    role: "injection",
+                    role: "assistant",
                     content: [
                         {
                             type: "text",
@@ -191,7 +191,7 @@ export function inject(
 
         return {
             message: {
-                role: "injection",
+                role: "assistant",
                 content: [{ type: "text", text: injection.response }],
             },
             index: i,

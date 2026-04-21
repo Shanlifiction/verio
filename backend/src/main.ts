@@ -1,8 +1,8 @@
 import { createEvent, sessionMiddleware } from "./sessions.js";
+import express, { Errback, NextFunction, Request, Response } from "express";
 
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import express from "express";
 import { generateReport } from "./report.js";
 import { userMessage } from "./chat-agent/user-messaging.js";
 
@@ -13,6 +13,26 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static("static"));
 app.use(sessionMiddleware);
+app.use(
+    (
+        rawError: unknown,
+        _request: Request,
+        response: Response,
+        _next: NextFunction,
+    ) => {
+        console.error(rawError);
+
+        const isDev = process.env.NODE_ENV === "development";
+
+        const error =
+            rawError instanceof Error ? rawError : new Error("Unknown error");
+
+        response.status(500).json({
+            message: "Internal Server Error",
+            ...(isDev ? { stack: error.stack } : {}),
+        });
+    },
+);
 const port = 3000;
 
 export const claudeKey = process.env.CLAUDE_KEY!;

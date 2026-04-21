@@ -57,7 +57,7 @@ export interface PasteEvent extends BaseUserEvent {
 }
 
 export interface Message {
-    role: "user" | "assistant" | "injection";
+    role: "user" | "assistant";
     content: ContentBlockParam[];
 }
 
