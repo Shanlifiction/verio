@@ -1,0 +1,7 @@
+{
+    "name": "verio",
+    "workspaces": [
+        "./backend",
+        "./frontend"
+    ]
+}
