@@ -18,7 +18,7 @@ export type RecommendationFound =
     | "unclear"
     | "none";
 
-export interface RecommendationCriteria {
+export interface RecommendationCriteria extends Criteria {
     recommendationFound: RecommendationFound;
 }
 

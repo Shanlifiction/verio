@@ -6,13 +6,11 @@
 - [ ] Finish memo grading agent
 - [ ] Add behavioral agent
 - [ ] Add verdict agent
-- [ ] Complete the flow from creating to finishing a session
+- [x] Complete the flow from creating to finishing a session
 
 ## Should have
 
-- [ ] OAuth login (for test administrators)
-- [ ] Dashboard for creating tests and collecting test results
-- [ ] Code invitation system
+- [ ] Mock dashboard for collecting test results
 - [ ] Save results to database
 
 ## Nice to have

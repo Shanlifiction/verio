@@ -12,6 +12,10 @@ export async function serverFetch(path: string, body?: any, method?: string) {
     });
 }
 
+export async function createSession(code: string) {
+    await serverFetch("/create-session", { code });
+}
+
 export async function sendMessage(message: string) {
     const response = await serverFetch("/message", { message });
 
@@ -31,8 +35,8 @@ export async function pasteEvent(wordCount: number) {
     await serverFetch("/paste-event", { wordCount });
 }
 
-export async function finish(memo: string) {
-    await serverFetch("/finish", { memo });
+export async function submitTest(memo: string) {
+    await serverFetch("/submit-test", { memo });
 }
 
 export async function getReport() {

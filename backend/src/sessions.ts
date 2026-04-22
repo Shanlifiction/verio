@@ -71,6 +71,7 @@ export type UserEvent =
     | PasteEvent;
 
 export interface Session {
+    code: string;
     client: Anthropic;
     messages: Message[];
     events: UserEvent[];
@@ -82,38 +83,40 @@ export interface Session {
 
 const sessions: Record<string, Session> = {};
 
-function getSession(sessionId: string) {
-    if (!sessions[sessionId]) {
-        const session: Session = {
-            client: new Anthropic(),
-            messages: [],
-            events: [],
-            locked: false,
-            injectionState: injections.map(() => ({
-                fired: false,
-                resolved: false,
-                concessionIssued: false,
-                weakConcessionCount: 0,
-                fireCount: 0,
-            })),
-        };
-        session.client.apiKey = claudeKey;
-        sessions[sessionId] = session;
-        createEvent(session, { type: "session-start" });
-    }
+export function createSession(code: string) {
+    const sessionId = crypto.randomUUID();
 
-    return sessions[sessionId];
+    const session: Session = {
+        code,
+        client: new Anthropic(),
+        messages: [],
+        events: [],
+        locked: false,
+        injectionState: injections.map(() => ({
+            fired: false,
+            resolved: false,
+            concessionIssued: false,
+            weakConcessionCount: 0,
+            fireCount: 0,
+        })),
+    };
+
+    session.client.apiKey = claudeKey;
+    sessions[sessionId] = session;
+    createEvent(session, { type: "session-start" });
+
+    return sessionId;
 }
 
 export const sessionMiddleware: RequestHandler = (request, response, next) => {
-    let sessionId = request.cookies["session"];
+    const sessionId = request.cookies["session"];
 
-    if (!sessionId) {
-        sessionId = crypto.randomUUID();
-        response.cookie("session", sessionId);
+    if (!sessionId || !sessions[sessionId]) {
+        response.sendStatus(401);
+        return;
     }
 
-    request.session = getSession(sessionId);
+    request.session = sessions[sessionId];
     next();
 };
 

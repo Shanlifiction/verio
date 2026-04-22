@@ -1,53 +1,27 @@
 import { useEffect, useState } from "react";
 
 import { Card } from "../components/card";
+import type { Criteria } from "@backend/grading/util";
 import { RadarChart } from "../components/radar-chart";
 import { getReport } from "../lib/server";
+import type { Report } from "@backend/report";
 
-export type RecommendationFound =
-    | "pass"
-    | "invest"
-    | "invest-at-revised-terms"
-    | "unclear"
-    | "none";
-
-export interface ScoredCriterion {
-    score: number;
-    evidence: string;
-}
-
-export interface RecommendationCalibration {
-    score: number;
-    recommendationFound: RecommendationFound;
-    evidence: string;
-}
-
-export interface MemoQuality {
-    factualCorrectness: ScoredCriterion;
-    reasoningLinkage: ScoredCriterion;
-    tradeoffHandling: ScoredCriterion;
-    recommendationCalibration: RecommendationCalibration;
-}
-
-export interface Report {
-    tabTime: number[];
-    pastedWords: number;
-    memoQuality?: MemoQuality;
-}
-
-function Metric({ metric, label }: { metric: ScoredCriterion; label: string }) {
+function Criteria({ metric, label }: { metric: Criteria; label: string }) {
     return (
         <Card className="max-w-lg">
-            <div className="flex items-center mb-1">
+            <div className="flex items-center mb-2">
                 <h2 className="text-xl">{label}</h2>
-                <div className="ml-auto flex items-end">
-                    <div className="size-10 text-xl flex items-center justify-center bg-blue-600 border-blue-700 border rounded-full font-bold shrink-0">
-                        {Math.round(metric.score * 100) / 10}
+                <div
+                    className="ml-auto size-12 p-1 rounded-full shrink-0 -mt-4"
+                    style={{
+                        background: `conic-gradient(var(--color-blue-600) ${metric.result.score * 100}%, var(--color-zinc-900) ${metric.result.score * 100}%)`,
+                    }}>
+                    <div className="size-full bg-zinc-800 rounded-full flex items-center justify-center font-bold text-lg">
+                        {Math.round(metric.result.score * 100) / 10}
                     </div>
-                    <div className="text-zinc-400">/10</div>
                 </div>
             </div>
-            {metric.evidence}
+            {metric.result.evidence}
         </Card>
     );
 }
@@ -60,52 +34,51 @@ export function Report() {
     }, []);
 
     if (!report?.memoQuality) {
-        return (
-            <div className="bg-zinc-900 text-zinc-50 min-h-screen flex flex-col p-8">
-                Loading report
-            </div>
-        );
+        return <div>Loading report</div>;
     }
 
     return (
-        <div className="bg-zinc-900 text-zinc-50 min-h-screen flex flex-col p-8">
+        <div className="flex flex-col mx-auto">
             <div className="mx-auto w-fit">
                 <RadarChart
                     metrics={[
                         {
                             label: "Factual correctness",
-                            value: report.memoQuality.factualCorrectness.score,
+                            value: report.memoQuality.factualCorrectness.result
+                                .score,
                         },
                         {
                             label: "Reasoning linkage",
-                            value: report.memoQuality.reasoningLinkage.score,
+                            value: report.memoQuality.reasoningLinkage.result
+                                .score,
                         },
                         {
                             label: "Recommendation calibration",
-                            value: report.memoQuality.recommendationCalibration
+                            value: report.memoQuality.recommendation.result
                                 .score,
                         },
                         {
                             label: "Trade-off handling",
-                            value: report.memoQuality.tradeoffHandling.score,
+                            value: report.memoQuality.tradeoffHandling.result
+                                .score,
                         },
                     ]}
                 />
             </div>
             <div className="grid grid-cols-2 gap-4 mx-auto mt-8">
-                <Metric
+                <Criteria
                     metric={report.memoQuality.factualCorrectness}
                     label="Factual correctness"
                 />
-                <Metric
+                <Criteria
                     metric={report.memoQuality.reasoningLinkage}
                     label="Reasoning linkage"
                 />
-                <Metric
-                    metric={report.memoQuality.recommendationCalibration}
+                <Criteria
+                    metric={report.memoQuality.recommendation}
                     label="Recommendation calibration"
                 />
-                <Metric
+                <Criteria
                     metric={report.memoQuality.tradeoffHandling}
                     label="Trade-off handling"
                 />

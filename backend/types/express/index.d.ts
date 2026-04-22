@@ -1,4 +1,4 @@
-import { Session } from "../../sessions";
+import { Session } from "../../src/sessions.ts";
 
 declare global {
     namespace Express {

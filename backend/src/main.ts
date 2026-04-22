@@ -1,4 +1,4 @@
-import { createEvent, sessionMiddleware } from "./sessions.js";
+import { createEvent, createSession, sessionMiddleware } from "./sessions.js";
 import express, { Errback, NextFunction, Request, Response } from "express";
 
 import cookieParser from "cookie-parser";
@@ -12,7 +12,6 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.static(`${process.cwd()}/static`));
-app.use(sessionMiddleware);
 app.use(
     (
         rawError: unknown,
@@ -41,22 +40,28 @@ if (!claudeKey) {
     throw new Error("No key found");
 }
 
-app.get("/history", async (request, response) => {
+app.post("/create-session", async (request, response) => {
+    const sessionId = createSession(request.body.code);
+    response.cookie("session", sessionId);
+    response.sendStatus(201);
+});
+
+app.get("/history", sessionMiddleware, async (request, response) => {
     response.send(request.session.messages);
 });
 
-app.post("/message", async (request, response) => {
+app.post("/message", sessionMiddleware, async (request, response) => {
     response.send({
         response: await userMessage(request.session, request.body.message),
     });
 });
 
-app.post("/set-active-tab", (request, response) => {
+app.post("/set-active-tab", sessionMiddleware, (request, response) => {
     createEvent(request.session, { type: "tab-switch", tab: request.body.tab });
     response.sendStatus(200);
 });
 
-app.post("/paste-event", (request, response) => {
+app.post("/paste-event", sessionMiddleware, (request, response) => {
     createEvent(request.session, {
         type: "paste",
         wordCount: request.body.wordCount,
@@ -64,13 +69,13 @@ app.post("/paste-event", (request, response) => {
     response.sendStatus(200);
 });
 
-app.post("/finish", (request, response) => {
+app.post("/submit-test", sessionMiddleware, (request, response) => {
     createEvent(request.session, { type: "session-end" });
     request.session.memo = request.body.memo;
     response.sendStatus(200);
 });
 
-app.get("/report", async (request, response) => {
+app.get("/report", sessionMiddleware, async (request, response) => {
     response.send(await generateReport(request.session));
 });
 

@@ -52,9 +52,7 @@ export async function grade<T>({
         messages,
         tools: [
             {
-                name: "memo_analysis_output",
-                description:
-                    "Returns structured memo analysis results for a session",
+                name: "output",
                 input_schema: schema,
             },
         ],

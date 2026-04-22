@@ -12,12 +12,16 @@ import {
     tablePlugin,
     toolbarPlugin,
 } from "@mdxeditor/editor";
-import { finish, pasteEvent } from "../lib/server";
+import { pasteEvent, submitTest } from "../lib/server";
 import { useEffect, useRef, useState } from "react";
+
+import { Button } from "./button";
+import { useNavigate } from "react-router";
 
 export function MemoEditor() {
     const [value, setValue] = useState("");
     const ref = useRef<HTMLDivElement>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         function handlePaste(event: ClipboardEvent) {
@@ -40,6 +44,11 @@ export function MemoEditor() {
 
         return () => removeEventListener("paste", handlePaste);
     }, []);
+
+    async function handleSubmit() {
+        await submitTest(value);
+        navigate("/report");
+    }
 
     return (
         <div className="h-full flex flex-col" ref={ref}>
@@ -70,12 +79,7 @@ export function MemoEditor() {
                     listsPlugin(),
                 ]}
             />
-            <button
-                type="button"
-                onClick={() => finish(value)}
-                className="bg-zinc-50 text-gray-900 rounded-lg mt-1 ml-auto font-medium pl-4 pr-3 py-2 flex items-center gap-1">
-                Submit assignment
-            </button>
+            <Button onClick={handleSubmit}>Submit assignment</Button>
         </div>
     );
 }
