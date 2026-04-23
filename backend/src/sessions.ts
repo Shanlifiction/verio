@@ -1,10 +1,10 @@
-import { InjectionState, injections } from "./chat-agent/injection.js";
-
 import Anthropic from "@anthropic-ai/sdk";
 import { ContentBlockParam } from "@anthropic-ai/sdk/resources";
+import { InjectionState } from "./chat-agent/injection.js";
 import { Report } from "./report.js";
 import { RequestHandler } from "express";
 import { claudeKey } from "./main.js";
+import { injections } from "./chat-agent/injections.js";
 
 export type UserEventType =
     | "session-start"

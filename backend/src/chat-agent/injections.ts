@@ -1,4 +1,4 @@
-import { Injection, or } from "./injection.js";
+import { Injection, and, or } from "./injection.js";
 
 export const injectionTriggers = or(
     "walk me through",
@@ -18,41 +18,59 @@ export const injectionTriggers = or(
 );
 
 // Removed matches which are super-sets of other triggers since those will be matched anyway.
+// Ordered in priority (step 2)
 export const injections: Injection[] = [
+    // Injection 4
     {
         matches: or(
-            "growth",
-            "growing",
-            "trajectory",
-            "revenue trajectory",
-            "how fast",
-            "scaling",
-            "top-line",
-            "top line",
-            "decelerat",
-            "revenue trend",
-            "momentum",
-            "pace",
-            "slowdown",
+            "how much above",
+            "premium to comps",
+            "premium to peers",
+            "how expensive",
+            "relative to comps",
+            "relative to peers",
+            "compared to comps",
+            "comp premium",
+            "how far above",
+            "how much more expensive",
+            "how much of a premium",
+            "premium size",
+            "gap to comps",
+            "versus peers",
+            "how large is the premium",
+            "how out of band",
+            "multiple gap",
         ),
-        antiMatches: or("valuation", "multiple", "retention", "churn"),
-        challengeMatches: or("28,twenty eight"),
-        exhibitChallengeMatches: "exhibit b",
+        antiMatches: null,
+        challengeMatches: or(
+            "3.3",
+            "3x",
+            "229",
+            "230",
+            "3.29",
+            "triple",
+            "tripling",
+            "3 times",
+            "factor of 3",
+        ),
+        exhibitChallengeMatches: "exhibit c",
         weakChallengeMatches: or(
-            "current growth",
-            "you're blending",
-            "not 40",
-            "decelerat",
-            "latest figure",
-            "most recent figure",
+            "much larger",
+            "way more",
+            "way above",
+            "not 70",
+            "not 80",
+            "much more than",
+            "recalculate",
         ),
         response:
-            "Based on the ARR progression and the current 156M run-rate, I'd characterize Lindstrand as still growing around 40%+ annualized. That's a solid growth profile for a Series C SaaS company.",
+            "At 22.7x versus a 6.9x comp average, Lindstrand is trading at roughly a 70–80% premium to peers — rich, but not wildly out of band.",
         concessionResponse:
-            "You're right — the explicit current YoY figure is 28%. My earlier wording blended historical growth with the current trajectory. I'd frame the business as decelerating rather than still growing at 40%+.",
+            "You're right — I understated the premium. At 22.7x versus 6.9x, Lindstrand is trading at roughly 3.3x the comp average, so the gap is much wider than I described.",
         weakConcessionResponse:
-            "Fair push. Worth anchoring to the most recent YoY figure in Exhibit B rather than the blended run-rate picture — they tell different stories.",
+            "Fair push. Worth doing the arithmetic directly from Exhibit C rather than taking my framing — the relative premium may be larger than I described.",
     },
+    // Injection 2
     {
         matches: or(
             "churn",
@@ -98,6 +116,7 @@ export const injections: Injection[] = [
         weakConcessionResponse:
             "Fair push. Worth going back to Exhibit B and checking the gross logo churn figure directly — I may have been reading from a different data point.",
     },
+    // Injection 3
     {
         matches: or(
             "valuation",
@@ -148,55 +167,42 @@ export const injections: Injection[] = [
         weakConcessionResponse:
             "Fair push. Worth cross-referencing the NRR figure against the benchmark table in Exhibit D before using it to justify the premium — the framing might be stronger than the data supports.",
     },
+    // Injection 1
     {
         matches: or(
-            "how much above",
-            "premium to comps",
-            "premium to peers",
-            "how expensive",
-            "relative to comps",
-            "relative to peers",
-            "compared to comps",
-            "comp premium",
-            "how far above",
-            "how much more expensive",
-            "how much of a premium",
-            "premium size",
-            "gap to comps",
-            "versus peers",
-            "how large is the premium",
-            "how out of band",
-            "multiple gap",
+            "growth",
+            "growing",
+            "trajectory",
+            "revenue trajectory",
+            "how fast",
+            "scaling",
+            "top-line",
+            "top line",
+            "decelerat",
+            "revenue trend",
+            "momentum",
+            "pace",
+            "slowdown",
         ),
-        antiMatches: null,
-        challengeMatches: or(
-            "3.3",
-            "3x",
-            "229",
-            "230",
-            "3.29",
-            "triple",
-            "tripling",
-            "3 times",
-            "factor of 3",
-        ),
-        exhibitChallengeMatches: "exhibit c",
+        antiMatches: or("valuation", "multiple", "retention", "churn"),
+        challengeMatches: or("28,twenty eight"),
+        exhibitChallengeMatches: "exhibit b",
         weakChallengeMatches: or(
-            "much larger",
-            "way more",
-            "way above",
-            "not 70",
-            "not 80",
-            "much more than",
-            "recalculate",
+            "current growth",
+            "you're blending",
+            "not 40",
+            "decelerat",
+            "latest figure",
+            "most recent figure",
         ),
         response:
-            "At 22.7x versus a 6.9x comp average, Lindstrand is trading at roughly a 70–80% premium to peers — rich, but not wildly out of band.",
+            "Based on the ARR progression and the current 156M run-rate, I'd characterize Lindstrand as still growing around 40%+ annualized. That's a solid growth profile for a Series C SaaS company.",
         concessionResponse:
-            "You're right — I understated the premium. At 22.7x versus 6.9x, Lindstrand is trading at roughly 3.3x the comp average, so the gap is much wider than I described.",
+            "You're right — the explicit current YoY figure is 28%. My earlier wording blended historical growth with the current trajectory. I'd frame the business as decelerating rather than still growing at 40%+.",
         weakConcessionResponse:
-            "Fair push. Worth doing the arithmetic directly from Exhibit C rather than taking my framing — the relative premium may be larger than I described.",
+            "Fair push. Worth anchoring to the most recent YoY figure in Exhibit B rather than the blended run-rate picture — they tell different stories.",
     },
+    // Injection 5
     {
         matches: or(
             "shopify",
