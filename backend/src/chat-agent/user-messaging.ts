@@ -1,4 +1,8 @@
-import { ContentBlockParam, MessageParam } from "@anthropic-ai/sdk/resources";
+import {
+    ContentBlockParam,
+    MessageParam,
+    TextBlock,
+} from "@anthropic-ai/sdk/resources";
 import { Session, createEvent } from "../sessions.js";
 
 import { inject } from "./injection.js";
@@ -26,17 +30,15 @@ export async function userMessage(session: Session, prompt: string) {
 
     const injection = inject(session, prompt);
 
-    if (injection) {
+    if (injection && injection.type != "reinforced-assistant-message") {
         await new Promise((resolve) =>
             setTimeout(resolve, 3000 + (Math.random() - 0.5) * 2000),
         );
 
         createEvent(session, {
-            type: "injection-message",
+            type: injection.type,
             message: injection.message.content,
             index: injection.index,
-            isConcession: injection.isConcession,
-            isWeak: injection.isWeak,
         });
 
         session.messages.push(injection.message);
@@ -51,10 +53,23 @@ export async function userMessage(session: Session, prompt: string) {
         messages: session.messages,
     });
 
-    createEvent(session, {
-        type: "assistant-message",
-        message: message.content,
-    });
+    if (injection?.type == "reinforced-assistant-message") {
+        message.content.push(...(injection.message.content as TextBlock[]));
+    }
+
+    createEvent(
+        session,
+        injection?.type
+            ? {
+                  type: injection.type,
+                  message: message.content,
+                  index: injection.index,
+              }
+            : {
+                  type: "assistant-message",
+                  message: message.content,
+              },
+    );
 
     session.messages.push({ content: message.content, role: message.role });
 

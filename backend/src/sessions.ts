@@ -12,7 +12,10 @@ export type UserEventType =
     | "tab-switch"
     | "user-message"
     | "assistant-message"
+    | "reinforced-assistant-message"
     | "injection-message"
+    | "weak-concession-message"
+    | "concession-message"
     | "paste";
 
 export interface BaseUserEvent {
@@ -43,12 +46,28 @@ export interface AssistantMessageEvent extends BaseUserEvent {
     message: ContentBlockParam[];
 }
 
+export interface ReinforcedAssistantMessageEvent extends BaseUserEvent {
+    type: "reinforced-assistant-message";
+    message: ContentBlockParam[];
+    index: number;
+}
+
 export interface InjectionMessageEvent extends BaseUserEvent {
     type: "injection-message";
     message: ContentBlockParam[];
     index: number;
-    isConcession: boolean;
-    isWeak: boolean;
+}
+
+export interface ConcessionMessageEvent extends BaseUserEvent {
+    type: "concession-message";
+    message: ContentBlockParam[];
+    index: number;
+}
+
+export interface WeakConcessionMessageEvent extends BaseUserEvent {
+    type: "weak-concession-message";
+    message: ContentBlockParam[];
+    index: number;
 }
 
 export interface PasteEvent extends BaseUserEvent {
@@ -67,7 +86,10 @@ export type UserEvent =
     | TabSwitchEvent
     | UserMessageEvent
     | AssistantMessageEvent
+    | ReinforcedAssistantMessageEvent
     | InjectionMessageEvent
+    | ConcessionMessageEvent
+    | WeakConcessionMessageEvent
     | PasteEvent;
 
 export interface Session {
@@ -102,10 +124,9 @@ export function createSession(code: string) {
         locked: false,
         injectionState: injections.map(() => ({
             fired: false,
-            resolved: false,
             concessionIssued: false,
-            weakConcessionCount: 0,
-            fireCount: 0,
+            weakConcessionIssued: false,
+            reinforcementIssued: false,
         })),
     };
 

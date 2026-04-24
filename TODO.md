@@ -2,7 +2,7 @@
 
 ## Must have
 
-- [ ] Add all documented injections, and implement edge cases
+- [x] Add all documented injections, and implement edge cases
 - [ ] Finish memo grading agent
 - [ ] Add behavioral agent
 - [ ] Add verdict agent
