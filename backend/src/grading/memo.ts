@@ -30,7 +30,7 @@ export interface MemoQuality {
 }
 
 export interface MemoGrade {
-    memoQuality: MemoQuality;
+    quality: MemoQuality;
 }
 
 export async function gradeMemo(session: Session) {
@@ -44,7 +44,7 @@ export async function gradeMemo(session: Session) {
         schema: {
             type: "object" as const,
             properties: {
-                memoQuality: {
+                quality: {
                     type: "object",
                     properties: {
                         factualCorrectness: criteriaSchema,

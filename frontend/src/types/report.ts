@@ -26,7 +26,7 @@ export interface MemoQuality {
 }
 
 export interface MemoGrade {
-    memoQuality: MemoQuality;
+    quality: MemoQuality;
 }
 
 export interface BehaviorGrade {}

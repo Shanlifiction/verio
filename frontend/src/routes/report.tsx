@@ -32,7 +32,7 @@ export function Report() {
         getReport().then(setReport);
     }, []);
 
-    if (!report?.memoQuality) {
+    if (!report?.memo?.quality) {
         return <div className="p-8">Loading report</div>;
     }
 
@@ -43,22 +43,22 @@ export function Report() {
                     metrics={[
                         {
                             label: "Factual correctness",
-                            value: report.memoQuality.factualCorrectness.result
+                            value: report.memo.quality.factualCorrectness.result
                                 .score,
                         },
                         {
                             label: "Reasoning linkage",
-                            value: report.memoQuality.reasoningLinkage.result
+                            value: report.memo.quality.reasoningLinkage.result
                                 .score,
                         },
                         {
                             label: "Recommendation calibration",
-                            value: report.memoQuality.recommendation.result
+                            value: report.memo.quality.recommendation.result
                                 .score,
                         },
                         {
                             label: "Trade-off handling",
-                            value: report.memoQuality.tradeoffHandling.result
+                            value: report.memo.quality.tradeoffHandling.result
                                 .score,
                         },
                     ]}
@@ -66,19 +66,19 @@ export function Report() {
             </div>
             <div className="grid grid-cols-2 gap-4 mx-auto mt-8">
                 <Criteria
-                    metric={report.memoQuality.factualCorrectness}
+                    metric={report.memo.quality.factualCorrectness}
                     label="Factual correctness"
                 />
                 <Criteria
-                    metric={report.memoQuality.reasoningLinkage}
+                    metric={report.memo.quality.reasoningLinkage}
                     label="Reasoning linkage"
                 />
                 <Criteria
-                    metric={report.memoQuality.recommendation}
+                    metric={report.memo.quality.recommendation}
                     label="Recommendation calibration"
                 />
                 <Criteria
-                    metric={report.memoQuality.tradeoffHandling}
+                    metric={report.memo.quality.tradeoffHandling}
                     label="Trade-off handling"
                 />
             </div>
