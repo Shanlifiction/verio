@@ -9,7 +9,7 @@ export type InputProps<
 };
 
 const inputClassName =
-    "border border-stone-600 rounded-lg focus:outline-none focus:border-stone-200 px-3 py-2";
+    "border border-stone-600 rounded-lg focus:outline-none focus:border-lime-200 px-3 py-2";
 
 export function TextInput({
     type,

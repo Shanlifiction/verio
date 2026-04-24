@@ -30,7 +30,10 @@ function Timer({ expires }: { expires: Date }) {
 
     return (
         <div className="ml-auto text-xl">
-            Time left: {minutesLeft}:{secondsLeft.toString().padStart(2, "0")}
+            <span className="text-stone-400">Time left:</span>{" "}
+            <span className="text-lime-200 font-medium">
+                {minutesLeft}:{secondsLeft.toString().padStart(2, "0")}
+            </span>
         </div>
     );
 }
@@ -49,7 +52,7 @@ export function TabViewer({ tabs, expires }: { tabs: Tab[]; expires: Date }) {
                     <button
                         key={filename}
                         onClick={() => setActiveTabState(index)}
-                        className={`${index == activeTab ? "bg-stone-600" : "bg-stone-800"} px-2 py-1 rounded`}>
+                        className={`${index == activeTab ? "border-b-2 border-lime-200 rounded-b-none" : "hover:border-b-2 border-lime-100"} transition-[border] duration-100 bg-stone-800 px-2 py-1 rounded`}>
                         {filename}
                     </button>
                 ))}
