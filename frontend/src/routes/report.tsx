@@ -28,6 +28,8 @@ function Criteria({ metric, label }: { metric: Criteria; label: string }) {
 export function Report() {
     const [report, setReport] = useState<Report | null>(null);
 
+    console.log(report);
+
     useEffect(() => {
         getReport().then(setReport);
     }, []);

@@ -25,8 +25,23 @@ export interface MemoQuality {
     recommendation: RecommendationCriteria;
 }
 
+export interface Propagation {
+    status: "fired" | "not-fired";
+    result:
+        | "propagated"
+        | "clean"
+        | "corrected-in-memo"
+        | "ambiguous"
+        | "not-applicable";
+    evidenceQuote?: string;
+    positiveChallengeFlag: boolean;
+    notes?: string;
+}
+
 export interface MemoGrade {
+    propagation: Propagation[];
     quality: MemoQuality;
+    flags: string[];
 }
 
 export interface BehaviorGrade {}

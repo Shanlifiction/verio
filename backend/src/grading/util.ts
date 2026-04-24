@@ -7,32 +7,6 @@ import {
 
 import { Session } from "../sessions.js";
 
-export interface CriteriaResult {
-    score: number;
-    evidence: string;
-}
-
-export interface Criteria {
-    result: CriteriaResult;
-}
-
-export const criteriaResultSchema = {
-    type: "object",
-    properties: {
-        score: { type: "number" },
-        evidence: { type: "string" },
-    },
-    required: ["score", "evidence"],
-};
-
-export const criteriaSchema = {
-    type: "object",
-    properties: {
-        result: criteriaResultSchema,
-    },
-    required: ["result"],
-};
-
 export async function grade<T>({
     session,
     system,
@@ -46,7 +20,7 @@ export async function grade<T>({
 }) {
     const response = await session.client.messages.create({
         model: "claude-sonnet-4-6",
-        max_tokens: 1024,
+        max_tokens: 4096,
         cache_control: { type: "ephemeral" },
         system,
         messages,
@@ -63,4 +37,17 @@ export async function grade<T>({
         (block) => block.type == "tool_use" && block.name == "output",
     ) as ToolUseBlock;
     return (block?.input as T) ?? null;
+}
+
+export function populateUserPrompt(
+    prompt: string,
+    properties: Record<string, string>,
+) {
+    let result = prompt;
+
+    for (const [property, value] of Object.entries(properties)) {
+        result = result.replaceAll(`{${property}}`, value);
+    }
+
+    return result;
 }
