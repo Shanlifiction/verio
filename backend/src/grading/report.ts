@@ -1,18 +1,24 @@
-import { MemoQuality, gradeMemo } from "./grading/memo.js";
+import { BehaviorGrade, gradeBehavior } from "./behavior.js";
+import { MemoGrade, gradeMemo } from "./memo.js";
+import { Verdict, getVerdict } from "./verdict.js";
 
-import { Session } from "./sessions.js";
+import { Session } from "../sessions.js";
 
 export interface Report {
     tabTime: number[];
     pastedWords: number;
-    memoQuality?: MemoQuality;
+    memo?: MemoGrade;
+    behavior?: BehaviorGrade;
+    verdict?: Verdict;
 }
 
 export async function generateReport(session: Session) {
     const result: Report = {
         tabTime: new Array(5).fill(0),
         pastedWords: 0,
-        memoQuality: await gradeMemo(session),
+        memo: await gradeMemo(session),
+        behavior: await gradeBehavior(session),
+        verdict: await getVerdict(session),
     };
 
     let activeTab: number | null = null;

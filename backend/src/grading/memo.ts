@@ -29,7 +29,7 @@ export interface MemoQuality {
     recommendation: RecommendationCriteria;
 }
 
-export interface MemoQualitySchema {
+export interface MemoGrade {
     memoQuality: MemoQuality;
 }
 
@@ -37,16 +37,9 @@ export async function gradeMemo(session: Session) {
     if (!session.memo) {
         return undefined;
     }
-
-    const response = await grade<MemoQualitySchema>({
+    const response = await grade<MemoGrade>({
         session,
-        system: [
-            ...contextFiles,
-            {
-                type: "text",
-                text: agentPrompt,
-            },
-        ],
+        system: [...contextFiles, { type: "text", text: agentPrompt }],
         messages: [{ role: "user", content: session.memo }],
         schema: {
             type: "object" as const,
@@ -87,5 +80,5 @@ export async function gradeMemo(session: Session) {
         },
     });
 
-    return response?.memoQuality;
+    return response ?? undefined;
 }

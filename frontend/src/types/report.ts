@@ -25,8 +25,18 @@ export interface MemoQuality {
     recommendation: RecommendationCriteria;
 }
 
+export interface MemoGrade {
+    memoQuality: MemoQuality;
+}
+
+export interface BehaviorGrade {}
+
+export interface Verdict {}
+
 export interface Report {
     tabTime: number[];
     pastedWords: number;
-    memoQuality?: MemoQuality;
+    memo?: MemoGrade;
+    behavior?: BehaviorGrade;
+    verdict?: Verdict;
 }

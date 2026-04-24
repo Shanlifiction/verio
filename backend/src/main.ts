@@ -3,7 +3,7 @@ import express, { Errback, NextFunction, Request, Response } from "express";
 
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { generateReport } from "./report.js";
+import { generateReport } from "./grading/report.js";
 import { userMessage } from "./chat-agent/user-messaging.js";
 
 dotenv.config();
