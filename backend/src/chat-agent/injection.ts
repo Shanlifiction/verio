@@ -29,9 +29,8 @@ export interface Injection {
 
 export interface InjectionState {
     fired: boolean;
-    resolved: boolean;
     concessionIssued: boolean;
-    weakConcessionCount: number;
+    weakConcessionIssued: boolean;
 }
 
 function match(prompt: string, expression: Match): boolean {
@@ -68,7 +67,7 @@ export function inject(
     const normalizedPrompt = prompt.toLowerCase().trim();
 
     const unresolved = session.injectionState.map(
-        (state) => state.fired && !state.resolved,
+        (state) => state.fired && !state.concessionIssued,
     );
     const unresolvedCount = unresolved.filter((state) => state).length;
 
@@ -89,7 +88,6 @@ export function inject(
             (unresolvedCount == 1 &&
                 match(normalizedPrompt, injection.exhibitChallengeMatches))
         ) {
-            injectionState.resolved = true;
             injectionState.concessionIssued = true;
 
             return {
@@ -112,11 +110,11 @@ export function inject(
             continue;
         }
 
-        injectionState.concessionIssued = true;
-
-        if (++injectionState.weakConcessionCount >= 2) {
-            injectionState.resolved = true;
+        if (injectionState.weakConcessionIssued) {
+            continue;
         }
+
+        injectionState.weakConcessionIssued = true;
 
         return {
             message: {
